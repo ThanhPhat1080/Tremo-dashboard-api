@@ -3,24 +3,24 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "client": "npm run start --prefix front",
     "server": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
-    "start": "node index.js"
+    "start": "node index.js",
+    "format": "npx prettier . --write"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "body-parser": "^1.19.0",
+    "dotenv": "^16.3.1",
     "express": "^4.17.1",
-    "lowdb": "^1.0.0",
     "shortid": "^2.2.15"
   },
   "devDependencies": {
-    "concurrently": "^5.1.0",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "prettier": "3.1.0"
   }
 }
