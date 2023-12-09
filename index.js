@@ -16,10 +16,9 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 const userController = ({ app, supabase }) => {
-  const _userDataTable = supabase.from('users');
 
   app.get(`/api/users`, async (req, res) => {
-    const { data: users, error } = await _userDataTable
+    const { data: users, error } = await supabase.from('users')
       .select('*')
       .eq('email', req.query.email || '');
 
@@ -32,7 +31,7 @@ const userController = ({ app, supabase }) => {
 
   app.post(`/api/user`, async (req, res) => {
     const { username, password, email } = req.body;
-    const { data, error } = await _userDataTable
+    const { data, error } = await supabase.from('users')
       .select('email')
       .eq('email', email || '');
 
@@ -47,7 +46,7 @@ const userController = ({ app, supabase }) => {
       });
     }
 
-    const createUserRes = await _userDataTable
+    const createUserRes = await supabase.from('users')
       .insert([{ username, password, email }])
       .select();
     console.log('data', createUserRes);
