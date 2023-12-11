@@ -49,10 +49,9 @@ const userController = ({ app, supabase }) => {
     const createUserRes = await supabase.from('users')
       .insert([{ name, password, email }])
       .select();
-    console.log('data', createUserRes);
 
     if (createUserRes.error) {
-      res.status(500).send(error);
+      return res.status(500).send(error);
     }
 
     return res.status(201).send(createUserRes.data);
