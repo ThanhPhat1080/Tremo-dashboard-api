@@ -30,7 +30,7 @@ const userController = ({ app, supabase }) => {
   });
 
   app.post(`/api/user`, async (req, res) => {
-    const { username, password, email } = req.body;
+    const { name, password, email } = req.body;
     const { data, error } = await supabase.from('users')
       .select('email')
       .eq('email', email || '');
@@ -47,7 +47,7 @@ const userController = ({ app, supabase }) => {
     }
 
     const createUserRes = await supabase.from('users')
-      .insert([{ username, password, email }])
+      .insert([{ name, password, email }])
       .select();
     console.log('data', createUserRes);
 
