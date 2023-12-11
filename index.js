@@ -40,7 +40,7 @@ const userController = ({ app, supabase }) => {
     }
 
     if (data.length !== 0) {
-      return res.status(500).send({
+      return res.status(403).send({
         error: true,
         message: 'User already exist!',
       });
