@@ -18,15 +18,29 @@ app.use(express.urlencoded());
 const userController = ({ app, supabase }) => {
 
   app.get(`/api/users`, async (req, res) => {
+
+    if (req.query.email) {
+      const { data: users, error } = await supabase.from('users')
+        .select('*')
+        .eq('email', req.query.email);
+
+      if (error) {
+        res.status(500).send(error);
+      }
+
+      return res.status(200).send(users);
+    }
+
     const { data: users, error } = await supabase.from('users')
-      .select('*')
-      .eq('email', req.query.email || '');
+      .select('*');
 
     if (error) {
       res.status(500).send(error);
     }
 
     return res.status(200).send(users);
+
+
   });
 
   app.post(`/api/user`, async (req, res) => {
@@ -89,8 +103,54 @@ const userController = ({ app, supabase }) => {
   // })
 };
 
+const profileController = ({app, supabase }) => {
+  app.get(`/api/profile`, async (req, res) => {
+
+    const { data: profiles, error } = await supabase.from('profile')
+      .select('*');
+
+    if (error) {
+      res.status(500).send(error);
+    }
+
+    return res.status(200).send(profiles[0]);
+  });
+}
+
+
+const projectController = ({app, supabase }) => {
+  app.get(`/api/project`, async (req, res) => {
+
+    const { data: projects, error } = await supabase.from('project')
+      .select('*');
+
+    if (error) {
+      res.status(500).send(error);
+    }
+
+    return res.status(200).send(projects);
+  });
+}
+
+const saleProjectController = ({app, supabase }) => {
+  app.get(`/api/sale-project`, async (req, res) => {
+
+    const { data: projects, error } = await supabase.from('saleProject')
+      .select('*');
+
+    if (error) {
+      res.status(500).send(error);
+    }
+
+    return res.status(200).send(projects);
+  });
+}
+
 // Execute controllers
 userController({ app, supabase });
+profileController({ app, supabase });
+projectController({ app, supabase });
+saleProjectController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
