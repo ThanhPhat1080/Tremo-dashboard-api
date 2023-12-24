@@ -146,11 +146,26 @@ const saleProjectController = ({app, supabase }) => {
   });
 }
 
+const saleAnalyticController = ({app, supabase}) => {
+  app.get(`/api/analytics`, async (req, res) => {
+
+    const { data: projects, error } = await supabase.from('analytics')
+      .select('*');
+
+    if (error) {
+      res.status(500).send(error);
+    }
+
+    return res.status(200).send(projects.length ? projects[0]: {});
+  });
+}
+
 // Execute controllers
 userController({ app, supabase });
 profileController({ app, supabase });
 projectController({ app, supabase });
 saleProjectController({ app, supabase });
+saleAnalyticController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
