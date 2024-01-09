@@ -160,8 +160,8 @@ const saleAnalyticController = ({app, supabase}) => {
   });
 }
 
-const saleAnalyticController = ({app, supabase}) => {
-  app.get(`/api/analytics`, async (req, res) => {
+const saleInformationController = ({app, supabase}) => {
+  app.get(`/api/sales`, async (req, res) => {
 
     const { data: projects, error } = await supabase.from('sales')
       .select('*');
