@@ -174,6 +174,36 @@ const saleInformationController = ({app, supabase}) => {
   });
 };
 
+const orderListController = ({app, supabase}) => {
+  app.get(`/api/orders`, async (req, res) => {
+
+    const { data: orders, error } = await supabase.from('orders')
+      .select('*');
+
+    if (error) {
+      res.status(500).send(error);
+    }
+
+    return res.status(200).send(orders.length ? orders[0]: {});
+  });
+};
+
+
+const orderDetailController = ({app, supabase }) => {
+  app.get(`/api/orders/detail`, async (req, res) => {
+
+    const { data: orders, error } = await supabase.from('orderDetail')
+      .select('*');
+
+    if (error) {
+      res.status(500).send(error);
+    }
+
+    return res.status(200).send(orders[0]);
+  });
+}
+
+
 // Execute controllers
 userController({ app, supabase });
 profileController({ app, supabase });
@@ -181,6 +211,8 @@ projectController({ app, supabase });
 saleProjectController({ app, supabase });
 saleAnalyticController({ app, supabase });
 saleInformationController({ app, supabase });
+orderListController({ app, supabase });
+orderDetailController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
