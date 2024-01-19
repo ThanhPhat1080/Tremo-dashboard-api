@@ -184,7 +184,7 @@ const orderListController = ({app, supabase}) => {
       res.status(500).send(error);
     }
 
-    return res.status(200).send(orders.length ? orders[0]: {});
+    return res.status(200).send(orders);
   });
 };
 
@@ -199,7 +199,7 @@ const orderDetailController = ({app, supabase }) => {
       res.status(500).send(error);
     }
 
-    return res.status(200).send(orders[0]);
+    return res.status(200).send(orders.length ? orders[0]: {});
   });
 }
 
