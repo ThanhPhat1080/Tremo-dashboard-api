@@ -177,30 +177,32 @@ const saleInformationController = ({app, supabase}) => {
 const orderListController = ({app, supabase}) => {
   app.get(`/api/orders`, async (req, res) => {
 
-    const { data: projects, error } = await supabase.from('orders')
+    const { data: orders, error } = await supabase.from('orders')
       .select('*');
 
     if (error) {
       res.status(500).send(error);
     }
 
-    return res.status(200).send(projects.length ? projects[0]: {});
+    return res.status(200).send(orders.length ? orders[0]: {});
   });
 };
+
 
 const orderDetailController = ({app, supabase }) => {
   app.get(`/api/orders/detail`, async (req, res) => {
 
-    const { data: projects, error } = await supabase.from('orderDetail')
+    const { data: orders, error } = await supabase.from('orderDetail')
       .select('*');
 
     if (error) {
       res.status(500).send(error);
     }
 
-    return res.status(200).send(projects);
+    return res.status(200).send(orders[0]);
   });
 }
+
 
 // Execute controllers
 userController({ app, supabase });
