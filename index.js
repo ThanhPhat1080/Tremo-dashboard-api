@@ -2,12 +2,11 @@ import { createClient } from '@supabase/supabase-js';
 import express from 'express';
 import bodyParser from 'body-parser';
 import env from 'dotenv';
+import { getPagination, getPaginationData } from './pagination.js';
 
 env.config();
 
-const supabaseUrl = 'https://slpmzxukenigimrfdrly.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 const app = express();
 
@@ -176,15 +175,18 @@ const saleInformationController = ({app, supabase}) => {
 
 const orderListController = ({app, supabase}) => {
   app.get(`/api/orders`, async (req, res) => {
-
-    const { data: orders, error } = await supabase.from('orders')
-      .select('*');
+    const { page, size } = req.query;
+    const { from, to } = getPagination(parseInt(page), parseInt(size));
+    
+    console.log(from, to)
+    const { data, count, error } = await supabase.from('orders')
+      .select("*", { count: "exact" }).range(from, to);
 
     if (error) {
       res.status(500).send(error);
     }
-
-    return res.status(200).send(orders);
+    
+    return res.status(200).send(getPaginationData(data, count, from, size));
   });
 };
 
