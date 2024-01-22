@@ -194,7 +194,7 @@ const orderListController = ({app, supabase}) => {
       res.status(500).send(error);
     }
     
-    return res.status(200).send(getPaginationData(data, count, from, size));
+    return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
   });
 };
 
@@ -234,7 +234,7 @@ const productListController = ({app, supabase}) => {
       res.status(500).send(error);
     }
     
-    return res.status(200).send(getPaginationData(data, count, from, size));
+    return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
   });
 };
 
