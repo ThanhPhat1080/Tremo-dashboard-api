@@ -178,7 +178,6 @@ const orderListController = ({app, supabase}) => {
     const { page, size } = req.query;
     const { from, to } = getPagination(parseInt(page), parseInt(size));
     
-    console.log(from, to)
     const { data, count, error } = await supabase.from('orders')
       .select("*", { count: "exact" }).range(from, to);
 
@@ -205,6 +204,22 @@ const orderDetailController = ({app, supabase }) => {
   });
 }
 
+const productListController = ({app, supabase}) => {
+  app.get(`/api/products`, async (req, res) => {
+    const { page, size } = req.query;
+    const { from, to } = getPagination(parseInt(page), parseInt(size));
+
+    const { data, count, error } = await supabase.from('products')
+      .select("*", { count: "exact" }).range(from, to);
+
+    if (error) {
+      res.status(500).send(error);
+    }
+    
+    return res.status(200).send(getPaginationData(data, count, from, size));
+  });
+};
+
 
 // Execute controllers
 userController({ app, supabase });
@@ -215,6 +230,7 @@ saleAnalyticController({ app, supabase });
 saleInformationController({ app, supabase });
 orderListController({ app, supabase });
 orderDetailController({ app, supabase });
+productListController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
