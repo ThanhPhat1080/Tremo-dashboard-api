@@ -6,10 +6,7 @@ import { getPagination, getPaginationData } from './pagination.js';
 
 env.config();
 
-const supabase = createClient(
-  'https://slpmzxukenigimrfdrly.supabase.co', 
-  process.env.SUPABASE_KEY
-);
+const supabase = createClient(process.env.SUPABASE_KEY, process.env.SUPABASE_KEY);
 
 const app = express();
 
