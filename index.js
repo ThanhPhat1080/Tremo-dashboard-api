@@ -188,10 +188,9 @@ const orderListController = ({app, supabase}) => {
       res.status(500).send(error);
     }
     
-    return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
+    return res.status(200).send(getPaginationData(data, count, from, size));
   });
 };
-
 
 
 const orderDetailController = ({app, supabase }) => {
@@ -208,30 +207,25 @@ const orderDetailController = ({app, supabase }) => {
   });
 }
 
-const productListController = ({app, supabase}) => {
-  app.get(`/api/products`, async (req, res) => {
-    const { page, size } = req.query;
+const orderItemController = ({app, supabase }) => {
+  app.get(`/api/orders/:orderId`, async (req, res) => {
+    const orderId = req.params.orderId;
 
-    // Handle without pagination
-    if (!page || !size) {
-      const { data: products, error } = await supabase.from('products')
-      .select("*");
-      return res.status(200).send(products);
+    if (!orderId) {
+      res.status(400).send("Missing order Id");
     }
 
-    // Handle with pagination
-    const { from, to } = getPagination(parseInt(page), parseInt(size));
-    const { data, count, error } = await supabase.from('products')
-      .select("*", { count: "exact" })
-      .range(from, to);
+    console.log('orderId', orderId)
+    const { data: orders, error } = await supabase.from('orders')
+      .select('*').eq('id', parseInt(orderId));
 
     if (error) {
       res.status(500).send(error);
     }
-    
-    return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
+
+    return res.status(200).send(orders.length ? orders[0]: {});
   });
-};
+}
 
 
 // Execute controllers
@@ -243,7 +237,7 @@ saleAnalyticController({ app, supabase });
 saleInformationController({ app, supabase });
 orderListController({ app, supabase });
 orderDetailController({ app, supabase });
-productListController({ app, supabase });
+orderItemController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
