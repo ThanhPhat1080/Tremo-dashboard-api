@@ -176,19 +176,13 @@ const saleInformationController = ({app, supabase}) => {
 const orderListController = ({app, supabase}) => {
   app.get(`/api/orders`, async (req, res) => {
     const { page, size } = req.query;
-
-    // Handle without pagination
-    if (!page || !size) {
-      const { data: orders, error } = await supabase.from('orders')
-      .select("*");
-      return res.status(200).send(orders);
-    }
-
-    // Handle with pagination
     const { from, to } = getPagination(parseInt(page), parseInt(size));
+    
+    const COLUMNS_LIST_SELECT = [
+      'id', 'createdAt', 'status', 'customer', 'revenue', 'products'
+    ]
     const { data, count, error } = await supabase.from('orders')
-      .select("*", { count: "exact" })
-      .range(from, to);
+      .select(COLUMNS_LIST_SELECT.join(','), { count: "exact" }).range(from, to);
 
     if (error) {
       res.status(500).send(error);
@@ -197,6 +191,7 @@ const orderListController = ({app, supabase}) => {
     return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
   });
 };
+
 
 
 const orderDetailController = ({app, supabase }) => {
