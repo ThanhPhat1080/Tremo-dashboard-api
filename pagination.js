@@ -7,10 +7,12 @@
 export const getPagination = (page, size) => {
   const limit = size ? size : 3;
   const from = page ? page * limit : 0;
-  const to = page ? from + size : size;
-
-  return { from, to };
+  // minus 1 because supabase include range both start and end
+  // for example: from 0 to 2 will include 0, 1, 2 -> 3 rows
+  const to = page ? from + size - 1 : size - 1;
+  return { from, to };                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 };
+
 
 export const getPaginationData = (data, total, from, size) => {
   return {
