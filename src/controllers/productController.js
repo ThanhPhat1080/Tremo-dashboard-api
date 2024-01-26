@@ -1,5 +1,5 @@
 import { getPagination, getPaginationData } from '../utils/pagination.js';
-import { valid_create_product, valid_edit_product } from '../utils/validate_payload.js';
+import { valid_create_product } from '../utils/validate_payload.js';
 
 const productController = ({app, supabase}) => {
   app.get(`/api/products`, async (req, res) => {
@@ -76,41 +76,39 @@ const productController = ({app, supabase}) => {
       res.status(500).send(error);
     }
 
-    res.status(200).send('Create success!');
+    res.status(201).send('Create success!');
   });
 
-  // app.put(`/api/product/:id`, async (req, res) => {
-  //   const payload = req.body;
-  //   if (valid_edit_product(payload)) {
-  //     res.status(400).send('Include not allow fields');
-  //   }
+  app.patch(`/api/products/:productId`, async (req, res) => {
+    const productId = req.params.productId;
+    const payload = req.body;
+    const data = {
+      productName: payload.name,
+      description: payload.desc,
+      weight: payload.weight,
+      category: payload.category,
+      quantity: payload.quantity,
+      price: payload.price,
+      currency: payload.currency,
+      sku: payload.sku,
+      tags: payload.tags,
+      image: payload.image,
+      shopifyUrl: payload.shopifyUrl,
+      facebookUrl: payload.facebookUrl,
+      instagramUrl: payload.instagramUrl,
+    }
+    const { error } = await supabase
+      .from('products')
+      .update(data)
+      .eq('id', parseInt(productId))
 
-  //   const { error } = await supabase
-  //     .from('products')
-  //     .update({
-  //       productName: payload.name,
-  //       description: payload.desc ? payload.desc : '',
-  //       weight: payload.weight,
-  //       category: payload.category,
-  //       quantity: payload.quantity ? payload.quantity : 0,
-  //       price: payload.price ? payload.price : 0,
-  //       currency: payload.currency,
-  //       sku: payload.sku,
-  //       tags: payload.tags ? payload.tags : [],
-  //       image: payload.image ? payload.image : '',
-  //       shopifyUrl: payload.shopifyUrl ? payload.shopifyUrl : '',
-  //       facebookUrl: payload.facebookUrl ? payload.facebookUrl : '',
-  //       instagramUrl: payload.instagramUrl ? payload.instagramUrl : '',
-  //     })
-  //     .eq('id', req.params.id)
+    if (error) {
+      res.status(500).send(error);
+    }
 
-  //   if (error) {
-  //     res.status(500).send(error);
-  //   }
-
-  //   return res.status(200).send('Update success!');
-  // });
+    res.status(200).send('Update success!');
+  });
 };
-  
 
+  
 export default productController;
