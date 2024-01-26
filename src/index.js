@@ -45,6 +45,7 @@ orderController({ app, supabase });
 // Product controller
 // - GET /api/products
 // - GET /api/products/:productId
+// - POST /api/products/
 productController({ app, supabase });
 
 app.get('/', (req, res) => {
