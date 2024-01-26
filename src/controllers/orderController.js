@@ -1,22 +1,14 @@
 import { getPagination, getPaginationData } from '../utils/pagination.js';
+import { ORDER_LIST_COLUMNS_SELECT, ORDER_DETAIL_COLUMNS_SELECT } from '../constants/index.js';
 
 const orderController = ({app, supabase}) => {
   app.get(`/api/orders`, async (req, res) => {
-    const COLUMNS_LIST_SELECT = [
-      'id', 
-      'createdAt', 
-      'status', 
-      'customer', 
-      'revenue', 
-      'products'
-    ]
-
     const { page, size } = req.query;
 
     // without pagination
     if (!page || !size) {
       const { data: orders, error } = await supabase.from('orders')
-        .select(COLUMNS_LIST_SELECT.join(','));
+        .select(ORDER_LIST_COLUMNS_SELECT);
 
       if (error) {
         res.status(500).send(error);
@@ -28,7 +20,7 @@ const orderController = ({app, supabase}) => {
     // with pagination
     const { from, to } = getPagination(parseInt(page), parseInt(size));
     const { data, count, error } = await supabase.from('orders')
-      .select(COLUMNS_LIST_SELECT.join(','), { count: "exact" }).range(from, to);
+      .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" }).range(from, to);
 
     if (error) {
       res.status(500).send(error);
@@ -40,7 +32,7 @@ const orderController = ({app, supabase}) => {
   app.get(`/api/orders/detail`, async (req, res) => {
 
     const { data: orders, error } = await supabase.from('orderDetail')
-      .select('*');
+      .select(ORDER_DETAIL_COLUMNS_SELECT);
 
     if (error) {
       res.status(500).send(error);
