@@ -3,7 +3,7 @@ import { ORDER_LIST_COLUMNS_SELECT, ORDER_DETAIL_COLUMNS_SELECT } from '../const
 
 const orderController = ({app, supabase}) => {
   app.get(`/api/orders`, async (req, res) => {
-    const { page, size } = req.query;
+    const { page, size, status } = req.query;
 
     // without pagination
     if (!page || !size) {
@@ -17,8 +17,22 @@ const orderController = ({app, supabase}) => {
       return res.status(200).send(orders);
     }
 
-    // with pagination
     const { from, to } = getPagination(parseInt(page), parseInt(size));
+
+    // with pagination and filter by status
+    if (status && parseInt(status) in [0, 1, 2]) {
+      const { data, count, error } = await supabase.from('orders')
+        .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" })
+        .eq('status', status)
+        .range(from, to);
+
+      if (error) {
+        res.status(500).send(error);
+      }
+      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
+    }
+
+    // with pagination
     const { data, count, error } = await supabase.from('orders')
       .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" }).range(from, to);
 

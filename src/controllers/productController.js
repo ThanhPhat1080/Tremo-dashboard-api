@@ -3,28 +3,54 @@ import { valid_create_product } from '../utils/validate_payload.js';
 
 const productController = ({app, supabase}) => {
   app.get(`/api/products`, async (req, res) => {
-    const { page, size } = req.query;
+    const { page, size, query } = req.query;
 
     // without pagination
     if (!page || !size) {
-      const { data: orders, error } = await supabase.from('products').select('*');
+      // list apply search query
+      if (query) {
+        const { data: products, error } = await supabase
+          .from('products')
+          .select('*')
+          .textSearch('productName', query, { config: 'english' });
 
+        if (error) {
+          res.status(500).send(error);
+        }
+        return res.status(200).send(products);  
+      }
+
+      // all
+      const { data: products, error } = await supabase.from('products').select('*');
       if (error) {
         res.status(500).send(error);
       }
-      
-      return res.status(200).send(orders);
+      return res.status(200).send(products);
     }
 
-    // with pagination
+    if (query) {
+      // with pagination and search query
+      const { from, to } = getPagination(parseInt(page), parseInt(size));
+      const { data, count, error } = await supabase.from('products')
+        .select('*', { count: "exact" })
+        .textSearch('productName', query, { config: 'english' })
+        .range(from, to);
+      
+      if (error) {
+        res.status(500).send(error);
+      }
+      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
+    }
+
+    // with pagination only
     const { from, to } = getPagination(parseInt(page), parseInt(size));
     const { data, count, error } = await supabase.from('products')
       .select('*', { count: "exact" }).range(from, to);
-
+  
     if (error) {
       res.status(500).send(error);
     }
-    
+
     return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
   });
 
