@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import supabase from './services/supabase.js';
 import userController from './controllers/userController.js';
 import orderController from './controllers/orderController.js';
@@ -9,11 +10,11 @@ import saleController from './controllers/saleController.js';
 import { projectController, saleProjectController } from './controllers/projectController.js';
 
 
-
 const app = express();
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cors())
 
 // Execute controllers
 // User controller
