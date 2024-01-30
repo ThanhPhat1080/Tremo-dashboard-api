@@ -199,8 +199,8 @@ const productController = ({app, supabase}) => {
     const { error } = await supabase
       .from('products')
       .insert({
-        productName: payload.name,
-        description: payload.desc ? payload.desc : '',
+        productName: payload.productName,
+        description: payload.description ? payload.description : '',
         weight: payload.weight,
         category: payload.category,
         quantity: payload.quantity ? payload.quantity : 0,
@@ -225,8 +225,8 @@ const productController = ({app, supabase}) => {
     const productId = req.params.productId;
     const payload = req.body;
     const data = {
-      productName: payload.name,
-      description: payload.desc,
+      productName: payload.productName,
+      description: payload.description,
       weight: payload.weight,
       category: payload.category,
       quantity: payload.quantity,
