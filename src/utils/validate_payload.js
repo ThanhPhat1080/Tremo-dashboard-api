@@ -1,6 +1,6 @@
 export const valid_create_product = (payload) => {
     const REQUIRE_FIELDS = [
-        'name',
+        'productName',
         'price',
         'category',
         'weight'
