@@ -218,7 +218,7 @@ const productController = ({app, supabase}) => {
       res.status(500).send(error);
     }
 
-    res.status(201).send('Create success!');
+    res.status(201).send({message: 'Create success!'});
   });
 
   app.patch(`/api/products/:productId`, async (req, res) => {
@@ -248,7 +248,7 @@ const productController = ({app, supabase}) => {
       res.status(500).send(error);
     }
 
-    res.status(200).send('Update success!');
+    res.status(200).send({message: 'Update success!'});
   });
 };
 
