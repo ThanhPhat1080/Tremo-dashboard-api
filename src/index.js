@@ -9,6 +9,7 @@ import profileController from './controllers/profileController.js';
 import saleController from './controllers/saleController.js';
 import invoiceController from './controllers/invoiceController.js';
 import transactionController from './controllers/transactionController.js';
+import billingController from './controllers/billingController.js';
 import { projectController, saleProjectController } from './controllers/projectController.js';
 
 
@@ -60,6 +61,10 @@ invoiceController({ app, supabase });
 // - GET /api/transactions
 // - GET /api/transactions/:transactionId
 transactionController({ app, supabase });
+
+// Billing controller
+// - GET /api/billing
+billingController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
