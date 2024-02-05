@@ -7,6 +7,7 @@ import orderController from './controllers/orderController.js';
 import productController from './controllers/productController.js';
 import profileController from './controllers/profileController.js';
 import saleController from './controllers/saleController.js';
+import invoiceController from './controllers/invoiceController.js';
 import { projectController, saleProjectController } from './controllers/projectController.js';
 
 
@@ -48,6 +49,11 @@ orderController({ app, supabase });
 // - GET /api/products/:productId
 // - POST /api/products/
 productController({ app, supabase });
+
+// Invoice controller
+// - GET /api/invoices
+// - GET /api/invoices/:invoiceId
+invoiceController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
