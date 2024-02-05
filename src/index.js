@@ -8,6 +8,7 @@ import productController from './controllers/productController.js';
 import profileController from './controllers/profileController.js';
 import saleController from './controllers/saleController.js';
 import invoiceController from './controllers/invoiceController.js';
+import transactionController from './controllers/transactionController.js';
 import { projectController, saleProjectController } from './controllers/projectController.js';
 
 
@@ -15,7 +16,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(cors())
+app.use(cors());
 
 // Execute controllers
 // User controller
@@ -54,6 +55,11 @@ productController({ app, supabase });
 // - GET /api/invoices
 // - GET /api/invoices/:invoiceId
 invoiceController({ app, supabase });
+
+// Invoice controller
+// - GET /api/transactions
+// - GET /api/transactions/:transactionId
+transactionController({ app, supabase });
 
 app.get('/', (req, res) => {
   return res.send('Hello');
