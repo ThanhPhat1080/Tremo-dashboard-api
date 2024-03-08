@@ -1,7 +1,7 @@
 import { getPagination, getPaginationData } from '../utils/pagination.js';
 import { valid_create_product } from '../utils/validate_payload.js';
 
-const productController = ({app, supabase}) => {
+const productController = ({ app, supabase }) => {
   app.get(`/api/products`, async (req, res) => {
     const { page, size, query, isAvailable } = req.query;
 
@@ -13,28 +13,28 @@ const productController = ({app, supabase}) => {
           .from('products')
           .select('*')
           .gt('quantity', 0)
-          .textSearch('productName', query, { config: 'english' });
+          .ilike('productName', `%${query}%`)
 
         if (error) {
           res.status(500).send(error);
         }
-        return res.status(200).send(products);  
+        return res.status(200).send(products);
       }
-      
+
       // list apply search query, isAvailable false
       if (query && isAvailable === "false") {
         const { data: products, error } = await supabase
           .from('products')
           .select('*')
           .eq('quantity', 0)
-          .textSearch('productName', query, { config: 'english' });
+          .ilike('productName', `%${query}%`)
 
         if (error) {
           res.status(500).send(error);
         }
-        return res.status(200).send(products);  
+        return res.status(200).send(products);
       }
-      
+
       // list apply search isAvailable true
       if (isAvailable === "true") {
         const { data: products, error } = await supabase
@@ -45,7 +45,7 @@ const productController = ({app, supabase}) => {
         if (error) {
           res.status(500).send(error);
         }
-        return res.status(200).send(products);  
+        return res.status(200).send(products);
       }
 
       // list apply search isAvailable false
@@ -59,20 +59,20 @@ const productController = ({app, supabase}) => {
         if (error) {
           res.status(500).send(error);
         }
-        return res.status(200).send(products);  
+        return res.status(200).send(products);
       }
-      
+
       // list apply search query
       if (query) {
         const { data: products, error } = await supabase
           .from('products')
           .select('*')
-          .textSearch('productName', query, { config: 'english' });
+          .ilike('productName', `%${query}%`)
 
         if (error) {
           res.status(500).send(error);
         }
-        return res.status(200).send(products);  
+        return res.status(200).send(products);
       }
 
       // all
@@ -91,30 +91,30 @@ const productController = ({app, supabase}) => {
         .from('products')
         .select('*', { count: "exact" })
         .gt('quantity', 0)
-        .textSearch('productName', query, { config: 'english' })
+        .ilike('productName', `%${query}%`)
         .range(from, to);
 
       if (error) {
         res.status(500).send(error);
       }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size))); 
+      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
     }
-    
+
     // list apply search query, isAvailable false
     if (query && isAvailable === "false") {
       const { data, count, error } = await supabase
         .from('products')
         .select('*', { count: "exact" })
         .eq('quantity', 0)
-        .textSearch('productName', query, { config: 'english' })
+        .ilike('productName', `%${query}%`)
         .range(from, to);
 
       if (error) {
         res.status(500).send(error);
       }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size))); 
+      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
     }
-    
+
     // list apply search isAvailable true
     if (isAvailable === "true") {
       const { data, count, error } = await supabase
@@ -126,7 +126,7 @@ const productController = ({app, supabase}) => {
       if (error) {
         res.status(500).send(error);
       }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size))); 
+      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
     }
 
     // list apply search isAvailable false
@@ -141,9 +141,9 @@ const productController = ({app, supabase}) => {
       if (error) {
         res.status(500).send(error);
       }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size))); 
+      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
     }
-    
+
     // list apply search query
     if (query) {
       const { data, count, error } = await supabase
@@ -155,7 +155,7 @@ const productController = ({app, supabase}) => {
       if (error) {
         res.status(500).send(error);
       }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size))); 
+      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
     }
 
     // all
@@ -185,7 +185,7 @@ const productController = ({app, supabase}) => {
       res.status(500).send(error);
     }
 
-    return res.status(200).send(products.length ? products[0]: {});
+    return res.status(200).send(products.length ? products[0] : {});
   });
 
 
@@ -218,7 +218,7 @@ const productController = ({app, supabase}) => {
       res.status(500).send(error);
     }
 
-    res.status(201).send({message: 'Create success!'});
+    res.status(201).send({ message: 'Create success!' });
   });
 
   app.patch(`/api/products/:productId`, async (req, res) => {
@@ -248,9 +248,9 @@ const productController = ({app, supabase}) => {
       res.status(500).send(error);
     }
 
-    res.status(200).send({message: 'Update success!'});
+    res.status(200).send({ message: 'Update success!' });
   });
 };
 
-  
+
 export default productController;
