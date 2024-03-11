@@ -149,7 +149,7 @@ const productController = ({ app, supabase }) => {
       const { data, count, error } = await supabase
         .from('products')
         .select('*', { count: "exact" })
-        .textSearch('productName', query, { config: 'english' })
+        .ilike('productName', `%${query}%`)
         .range(from, to);
 
       if (error) {
