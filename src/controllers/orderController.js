@@ -11,7 +11,8 @@ const orderController = ({app, supabase}) => {
       if (status && queryId) {
         const { data: orders, error } = await supabase.from('orders')
           .match({ id: queryId, status: status })
-          .select(ORDER_LIST_COLUMNS_SELECT);
+          .select(ORDER_LIST_COLUMNS_SELECT)
+          .order('createdAt', { ascending: false });
         
         if (error) {
           res.status(500).send(error);
@@ -21,9 +22,11 @@ const orderController = ({app, supabase}) => {
       }
 
       if (status) {
-        const { data: orders, error } = await supabase.from('orders')
+        const { data: orders, error } = await supabase
+          .from('orders')
           .eq('status', status)
-          .select(ORDER_LIST_COLUMNS_SELECT);
+          .select(ORDER_LIST_COLUMNS_SELECT)
+          .order('createdAt', { ascending: false });
         
         if (error) {
           res.status(500).send(error);
@@ -33,9 +36,11 @@ const orderController = ({app, supabase}) => {
       }
 
       if (query) {
-        const { data: orders, error } = await supabase.from('orders')
+        const { data: orders, error } = await supabase
+          .from('orders')
           .eq('id', query)
-          .select(ORDER_LIST_COLUMNS_SELECT);
+          .select(ORDER_LIST_COLUMNS_SELECT)
+          .order('createdAt', { ascending: false });
         
         if (error) {
           res.status(500).send(error);
@@ -44,8 +49,10 @@ const orderController = ({app, supabase}) => {
         return res.status(200).send(orders);
       }
 
-      const { data: orders, error } = await supabase.from('orders')
-          .select(ORDER_LIST_COLUMNS_SELECT);
+      const { data: orders, error } = await supabase
+        .from('orders')
+        .select(ORDER_LIST_COLUMNS_SELECT)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -57,10 +64,12 @@ const orderController = ({app, supabase}) => {
     const { from, to } = getPagination(parseInt(page), parseInt(size));
 
     if (status && parseInt(status) in ORDER_STATUSES && queryId) {
-      const { data, count, error } = await supabase.from('orders')
+      const { data, count, error } = await supabase
+        .from('orders')
         .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" })
         .match({ id: queryId, status: parseInt(status) })
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
       
       if (error) {
         res.status(500).send(error);
@@ -72,7 +81,8 @@ const orderController = ({app, supabase}) => {
       const { data, count, error } = await supabase.from('orders')
         .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" })
         .eq('status', parseInt(status))
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -84,7 +94,8 @@ const orderController = ({app, supabase}) => {
       const { data, count, error } = await supabase.from('orders')
         .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" })
         .eq('id', queryId)
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -93,8 +104,11 @@ const orderController = ({app, supabase}) => {
     }
 
     // with pagination
-    const { data, count, error } = await supabase.from('orders')
-      .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" }).range(from, to);
+    const { data, count, error } = await supabase
+      .from('orders')
+      .select(ORDER_LIST_COLUMNS_SELECT, { count: "exact" })
+      .range(from, to)
+      .order('createdAt', { ascending: false });
 
     if (error) {
       res.status(500).send(error);
