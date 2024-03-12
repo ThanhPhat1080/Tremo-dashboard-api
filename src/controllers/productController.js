@@ -14,6 +14,8 @@ const productController = ({ app, supabase }) => {
           .select('*')
           .gt('quantity', 0)
           .ilike('productName', `%${query}%`)
+          .order('createdAt', { ascending: false })
+
 
         if (error) {
           res.status(500).send(error);
@@ -28,6 +30,7 @@ const productController = ({ app, supabase }) => {
           .select('*')
           .eq('quantity', 0)
           .ilike('productName', `%${query}%`)
+          .order('createdAt', { ascending: false })
 
         if (error) {
           res.status(500).send(error);
@@ -40,7 +43,8 @@ const productController = ({ app, supabase }) => {
         const { data: products, error } = await supabase
           .from('products')
           .select('*')
-          .gt('quantity', 0);
+          .gt('quantity', 0)
+          .order('createdAt', { ascending: false });
 
         if (error) {
           res.status(500).send(error);
@@ -50,11 +54,11 @@ const productController = ({ app, supabase }) => {
 
       // list apply search isAvailable false
       if (isAvailable === "false") {
-        console.log('GO THIS')
         const { data: products, error } = await supabase
           .from('products')
           .select('*')
-          .eq('quantity', 0);
+          .eq('quantity', 0)
+          .order('createdAt', { ascending: false });
 
         if (error) {
           res.status(500).send(error);
@@ -68,6 +72,7 @@ const productController = ({ app, supabase }) => {
           .from('products')
           .select('*')
           .ilike('productName', `%${query}%`)
+          .order('createdAt', { ascending: false });
 
         if (error) {
           res.status(500).send(error);
@@ -76,7 +81,7 @@ const productController = ({ app, supabase }) => {
       }
 
       // all
-      const { data: products, error } = await supabase.from('products').select('*');
+      const { data: products, error } = await supabase.from('products').select('*').order('createdAt', { ascending: false });
       if (error) {
         res.status(500).send(error);
       }
@@ -92,7 +97,8 @@ const productController = ({ app, supabase }) => {
         .select('*', { count: "exact" })
         .gt('quantity', 0)
         .ilike('productName', `%${query}%`)
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -107,7 +113,8 @@ const productController = ({ app, supabase }) => {
         .select('*', { count: "exact" })
         .eq('quantity', 0)
         .ilike('productName', `%${query}%`)
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -121,7 +128,8 @@ const productController = ({ app, supabase }) => {
         .from('products')
         .select('*', { count: "exact" })
         .gt('quantity', 0)
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -131,12 +139,12 @@ const productController = ({ app, supabase }) => {
 
     // list apply search isAvailable false
     if (isAvailable === "false") {
-      console.log('GO THIS')
       const { data, count, error } = await supabase
         .from('products')
         .select('*', { count: "exact" })
         .eq('quantity', 0)
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -150,7 +158,8 @@ const productController = ({ app, supabase }) => {
         .from('products')
         .select('*', { count: "exact" })
         .ilike('productName', `%${query}%`)
-        .range(from, to);
+        .range(from, to)
+        .order('createdAt', { ascending: false });
 
       if (error) {
         res.status(500).send(error);
@@ -162,7 +171,8 @@ const productController = ({ app, supabase }) => {
     const { data, count, error } = await supabase
       .from('products')
       .select('*', { count: "exact" })
-      .range(from, to);
+      .range(from, to)
+      .order('createdAt', { ascending: false });
 
     if (error) {
       res.status(500).send(error);
