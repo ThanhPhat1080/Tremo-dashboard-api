@@ -7,7 +7,7 @@ import { valid_create_product } from '../utils/validate_payload.js';
 const productController = ({ app, supabase }) => {
   app.get(`/api/products`, async (req, res) => {
     const { page, size } = req.query;
-    const { ascending, sortField } = getSortData(eq.query);
+    const { ascending, sortField } = getSortData(req.query);
     const filters = filterProducts(req.query);
 
     // Select products - apply filters, sort
