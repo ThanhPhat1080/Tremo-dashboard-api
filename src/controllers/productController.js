@@ -1,183 +1,42 @@
 import { getPagination, getPaginationData } from '../utils/pagination.js';
+import { getSortData } from '../utils/sort.js';
+import { filterProducts } from '../utils/filter.js';
 import { valid_create_product } from '../utils/validate_payload.js';
+
 
 const productController = ({ app, supabase }) => {
   app.get(`/api/products`, async (req, res) => {
-    const { page, size, query, isAvailable } = req.query;
+    const { page, size } = req.query;
+    const { ascending, sortField } = getSortData(eq.query);
+    const filters = filterProducts(req.query);
 
-    // without pagination
-    if (!page || !size) {
-      // list apply search query, isAvailable true
-      if (query && isAvailable === "true") {
-        const { data: products, error } = await supabase
-          .from('products')
-          .select('*')
-          .gt('quantity', 0)
-          .ilike('productName', `%${query}%`)
-          .order('createdAt', { ascending: false })
-
-
-        if (error) {
-          res.status(500).send(error);
-        }
-        return res.status(200).send(products);
-      }
-
-      // list apply search query, isAvailable false
-      if (query && isAvailable === "false") {
-        const { data: products, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('quantity', 0)
-          .ilike('productName', `%${query}%`)
-          .order('createdAt', { ascending: false })
-
-        if (error) {
-          res.status(500).send(error);
-        }
-        return res.status(200).send(products);
-      }
-
-      // list apply search isAvailable true
-      if (isAvailable === "true") {
-        const { data: products, error } = await supabase
-          .from('products')
-          .select('*')
-          .gt('quantity', 0)
-          .order('createdAt', { ascending: false });
-
-        if (error) {
-          res.status(500).send(error);
-        }
-        return res.status(200).send(products);
-      }
-
-      // list apply search isAvailable false
-      if (isAvailable === "false") {
-        const { data: products, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('quantity', 0)
-          .order('createdAt', { ascending: false });
-
-        if (error) {
-          res.status(500).send(error);
-        }
-        return res.status(200).send(products);
-      }
-
-      // list apply search query
-      if (query) {
-        const { data: products, error } = await supabase
-          .from('products')
-          .select('*')
-          .ilike('productName', `%${query}%`)
-          .order('createdAt', { ascending: false });
-
-        if (error) {
-          res.status(500).send(error);
-        }
-        return res.status(200).send(products);
-      }
-
-      // all
-      const { data: products, error } = await supabase.from('products').select('*').order('createdAt', { ascending: false });
-      if (error) {
-        res.status(500).send(error);
-      }
-      return res.status(200).send(products);
-    }
-
-    // with pagination
-    const { from, to } = getPagination(parseInt(page), parseInt(size));
-    // list apply search query, isAvailable true
-    if (query && isAvailable === "true") {
-      const { data, count, error } = await supabase
+    // Select products - apply filters, sort
+    const products = filters.reduce(
+      (acc, [filter, ...args]) => {
+        return acc[filter](...args)
+      },
+      supabase
         .from('products')
-        .select('*', { count: "exact" })
-        .gt('quantity', 0)
-        .ilike('productName', `%${query}%`)
-        .range(from, to)
-        .order('createdAt', { ascending: false });
+        .select('*', {count: 'exact'})
+        .order(sortField, {ascending: ascending})
+    );
 
+    // Get data by pagination
+    if (page && size) {
+      const { from, to } = getPagination(parseInt(page), parseInt(size));
+      const {data, count, error } = await products.select('*', {count: 'exact'}).range(from, to);
       if (error) {
         res.status(500).send(error);
       }
       return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
     }
 
-    // list apply search query, isAvailable false
-    if (query && isAvailable === "false") {
-      const { data, count, error } = await supabase
-        .from('products')
-        .select('*', { count: "exact" })
-        .eq('quantity', 0)
-        .ilike('productName', `%${query}%`)
-        .range(from, to)
-        .order('createdAt', { ascending: false });
-
-      if (error) {
-        res.status(500).send(error);
-      }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
-    }
-
-    // list apply search isAvailable true
-    if (isAvailable === "true") {
-      const { data, count, error } = await supabase
-        .from('products')
-        .select('*', { count: "exact" })
-        .gt('quantity', 0)
-        .range(from, to)
-        .order('createdAt', { ascending: false });
-
-      if (error) {
-        res.status(500).send(error);
-      }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
-    }
-
-    // list apply search isAvailable false
-    if (isAvailable === "false") {
-      const { data, count, error } = await supabase
-        .from('products')
-        .select('*', { count: "exact" })
-        .eq('quantity', 0)
-        .range(from, to)
-        .order('createdAt', { ascending: false });
-
-      if (error) {
-        res.status(500).send(error);
-      }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
-    }
-
-    // list apply search query
-    if (query) {
-      const { data, count, error } = await supabase
-        .from('products')
-        .select('*', { count: "exact" })
-        .ilike('productName', `%${query}%`)
-        .range(from, to)
-        .order('createdAt', { ascending: false });
-
-      if (error) {
-        res.status(500).send(error);
-      }
-      return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
-    }
-
-    // all
-    const { data, count, error } = await supabase
-      .from('products')
-      .select('*', { count: "exact" })
-      .range(from, to)
-      .order('createdAt', { ascending: false });
-
+    // Get all data
+    const {data, error } = await products;
     if (error) {
       res.status(500).send(error);
     }
-    return res.status(200).send(getPaginationData(data, count, from, parseInt(size)));
+    return res.status(200).send(data);
   });
 
 
