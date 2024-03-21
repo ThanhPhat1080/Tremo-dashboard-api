@@ -1,4 +1,4 @@
-# Tremor Dashboard API 
+# Tremor Dashboard API
 
 Run apis in local:
 - Step 1: Get url, key and fill to new file ``.env`` (ref with ``.env.example``)
@@ -7,3 +7,6 @@ Run apis in local:
 npm install
 npm start
 ```
+
+API Doc:
+- `http://localhost:8080/docs/`

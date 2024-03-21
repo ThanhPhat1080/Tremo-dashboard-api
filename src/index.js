@@ -11,7 +11,8 @@ import invoiceController from './controllers/invoiceController.js';
 import transactionController from './controllers/transactionController.js';
 import billingController from './controllers/billingController.js';
 import { projectController, saleProjectController } from './controllers/projectController.js';
-
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 const app = express();
 app.use(bodyParser.json());
@@ -74,3 +75,29 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`app running on port ${PORT}`);
 });
+
+
+// Add swagger API documentation
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Tremor Dashboard API Documentation',
+    version: '1.0.0',
+  },
+  servers: [
+    {
+      url: 'http://localhost:8080',
+      description: 'Development server',
+    },
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  // Paths to files containing OpenAPI definitions
+  apis: ['./controllers/*.js'],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

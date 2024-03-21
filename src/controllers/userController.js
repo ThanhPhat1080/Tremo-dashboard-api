@@ -1,6 +1,13 @@
 
 const userController = ({ app, supabase }) => {
 
+  /**
+   * @swagger
+   * /users:
+   *   get:
+   *     summary: Retrieve a list of users
+   *     description: Retrieve a list of users.
+  */
   app.get(`/api/users`, async (req, res) => {
 
     if (req.query.email) {
