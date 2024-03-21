@@ -27,7 +27,7 @@ const userController = ({ app, supabase }) => {
 
   });
 
-  app.post(`/api/user`, async (req, res) => {
+  app.post(`/api/users`, async (req, res) => {
     const { name, password, email } = req.body;
     const { data, error } = await supabase.from('users')
       .select('email')
