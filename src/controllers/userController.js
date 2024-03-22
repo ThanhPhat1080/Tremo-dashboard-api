@@ -86,13 +86,13 @@ const userController = ({ app, supabase }) => {
 
     // user not exist
     const {
-      dataUser, getError
+      data: users, getError
     } = await supabase.from('users').select('id').eq('id', parseInt(userId))
 
-    if (!dataUser || getError) return res.status(400).send({ message: 'User not exist.' });
+    if (!users.length || getError) return res.status(400).send({ message: 'User not exist.' });
 
     const { pinCode } = req.body;
-    const data = {};
+    const dataUpdate = {};
 
     // invalid pin code format
     if (!pinCode || pinCode && pinCode.toString().length < 6) {
@@ -102,13 +102,13 @@ const userController = ({ app, supabase }) => {
     }
 
     if (pinCode) {
-      data.pinCode = pinCode;
+      dataUpdate.pinCode = pinCode;
     }
 
-    if (!!Object.keys(data).length) {
+    if (!!Object.keys(dataUpdate).length) {
       const { error } = await supabase
         .from('users')
-        .update(data)
+        .update(dataUpdate)
         .eq('id', parseInt(userId))
 
       if (error) {
