@@ -1,0 +1,65 @@
+##### API Documentation - Use VSCode REST Client Extension #####
+@tremorHostOnRender = https://tremor-api.onrender.com/api
+
+GET {{tremorHostOnRender}}/users/
+Accept: application/json
+
+###
+PATCH {{tremorHostOnRender}}/users/undefined
+Accept: application/json
+
+{
+    "pinCode": 123456
+}
+
+
+##### Local
+@tremorHostLocal = http://localhost:8080/api
+
+GET {{tremorHostLocal}}/users/
+Accept: application/json
+
+# userId invalid
+###
+PATCH {{tremorHostLocal}}/users/undefined
+content-type: application/json
+
+{
+    "pinCode": 123456
+}
+
+# userId not exist
+###
+PATCH {{tremorHostLocal}}/users/1234667
+content-type: application/json
+
+{
+    "pinCode": 123456
+}
+
+
+# pincode < 6 digits
+###
+PATCH {{tremorHostLocal}}/users/37
+content-type: application/json
+
+{
+    "pinCode": 123
+}
+
+# pincode undefined
+###
+PATCH {{tremorHostLocal}}/users/37
+content-type: application/json
+
+{
+    "pinCode": null
+}
+
+###
+PATCH {{tremorHostLocal}}/users/37
+content-type: application/json
+
+{
+    "pinCode": 123456
+}
