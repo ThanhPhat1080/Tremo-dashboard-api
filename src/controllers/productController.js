@@ -70,6 +70,7 @@ const productController = ({ app, supabase }) => {
       .insert({
         productName: payload.productName,
         description: payload.description ? payload.description : '',
+        providerName: payload.providerName ? payload.providerName : '',
         weight: payload.weight,
         category: payload.category,
         quantity: payload.quantity ? payload.quantity : 0,
@@ -96,6 +97,7 @@ const productController = ({ app, supabase }) => {
     const data = {
       productName: payload.productName,
       description: payload.description,
+      providerName: payload.providerName,
       weight: payload.weight,
       category: payload.category,
       quantity: payload.quantity,
